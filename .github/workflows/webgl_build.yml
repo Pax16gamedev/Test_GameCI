@@ -1,0 +1,38 @@
+name: Run the WebGL build
+on:
+  workflow_dispatch: {}
+jobs:
+  build:
+    name: Run the WebGL build
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout
+      - name: Check out my unity project.
+        uses: actions/checkout@v4
+
+      # Build
+      - name: Run the WebGL build
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          targetPlatform: WebGL
+          unityVersion: 6000.0.25f1
+          versioning: Semantic
+      
+      # Deploy to GH
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.3
+        with:
+          branch: gh-pages
+          folder: build
+          target-folder: .
+
+      # Upload Build
+      - name: Upload the WebGL Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Build
+          path: build
