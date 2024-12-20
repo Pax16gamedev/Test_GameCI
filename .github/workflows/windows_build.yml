@@ -1,7 +1,30 @@
 name: Run the Windows build
 on:
   workflow_dispatch: {}
+  push:
+    branches:
+      - main
 jobs:
+  free-disk-space:
+    name: Free space disk on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    - name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        # this might remove tools that are actually needed,
+        # if set to "true" but frees about 6 GB
+        tool-cache: false
+        
+        # all of these default to true, but feel free to set to
+        # "false" if necessary for your workflow
+        android: true
+        dotnet: false
+        haskell: true
+        large-packages: false
+        docker-images: false
+        swap-storage: true
+
   build:
     name: ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
@@ -36,6 +59,7 @@ jobs:
           targetPlatform: ${{ matrix.targetPlatform }}
           unityVersion: 6000.0.25f1
           versioning: Semantic
+          buildName: ${{ vars.PROJECT_NAME }}
 
       # Upload Build
       - name: Upload Build

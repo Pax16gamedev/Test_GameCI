@@ -1,0 +1,15 @@
+name: Validate Branch Name
+on:
+  pull_request:
+    branches:
+      - desarrollo
+jobs:
+  validate_branch_name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Branch Name
+        run: |
+          if [[ ! "${{ github.head_ref }}" =~ ^(feature|bugfix|hotfix)\/.*$ ]]; then
+            echo "Error: La rama debe comenzar con 'feature/', 'bugfix/' o 'hotfix/'"
+            exit 1
+          fi
