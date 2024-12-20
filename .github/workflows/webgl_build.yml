@@ -2,6 +2,26 @@ name: Run the WebGL build
 on:
   workflow_dispatch: {}
 jobs:
+  free-disk-space:
+    name: Free space disk on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    - name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        # this might remove tools that are actually needed,
+        # if set to "true" but frees about 6 GB
+        tool-cache: false
+        
+        # all of these default to true, but feel free to set to
+        # "false" if necessary for your workflow
+        android: true
+        dotnet: false
+        haskell: true
+        large-packages: false
+        docker-images: false
+        swap-storage: true
+
   build:
     name: Run the WebGL build
     runs-on: ubuntu-latest
