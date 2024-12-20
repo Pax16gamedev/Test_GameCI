@@ -1,9 +1,9 @@
-name: Run the WebGL build
+name: Create the WebGL build
 on:
   workflow_dispatch: {}
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 jobs:
   free-disk-space:
     name: Free space disk on Ubuntu
@@ -12,12 +12,7 @@ jobs:
     - name: Free Disk Space (Ubuntu)
       uses: jlumbroso/free-disk-space@main
       with:
-        # this might remove tools that are actually needed,
-        # if set to "true" but frees about 6 GB
         tool-cache: false
-        
-        # all of these default to true, but feel free to set to
-        # "false" if necessary for your workflow
         android: true
         dotnet: true
         haskell: true
@@ -26,24 +21,32 @@ jobs:
         swap-storage: true
 
   build:
-    name: Run the WebGL build
+    name: Build ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
+    needs: free-disk-space
     strategy:
       fail-fast: false
       matrix:
         targetPlatform:
           - WebGL
     steps:
+      - name: Validate required secrets
+        run: |
+          if [ -z "${{ secrets.UNITY_EMAIL }}" ] || [ -z "${{ secrets.UNITY_PASSWORD }}" ] || [ -z "${{ secrets.UNITY_LICENSE }}" ]; then
+            echo "Required secrets are missing. Please check UNITY_EMAIL, UNITY_PASSWORD, and UNITY_LICENSE."
+            exit 1
+          fi
+
       # Checkout
       - name: Check out my unity project.
         uses: actions/checkout@v4
-        with:
-          lfs: true
 
       # Cache
       - uses: actions/cache@v4
         with:
-          path: Library
+          path: |
+            Library
+            Temp
           key: Library-${{ matrix.targetPlatform }}
 
       # Build
@@ -60,24 +63,26 @@ jobs:
           buildName: ${{ vars.PROJECT_NAME }}
 
       # ZIP
-      - name: Compress Build
+      - name: Compress and move Build
         run: |
-          pushd build/${{ matrix.targetPlatform }}
-          sudo zip -r ${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip ./*
-          popd
-          sudo mv build/${{ matrix.targetPlatform }}/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip
+          zip -r build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip build/${{ matrix.targetPlatform }}/*
+          mv build/${{ matrix.targetPlatform }}/*.zip build/
      
       # Upload Build
       - name: Upload the WebGL Build
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}
+          name: ${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}-${{ github.run_id }}
           path: build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip
+
+      # Create deployment folder
+      - name: Prepare Deployment Folder
+        run: mv build/WebGL/${{ vars.PROJECT_NAME }} build/deploy
 
       # Deploy to GH
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
           branch: gh-pages
-          folder: build/WebGL/${{ vars.PROJECT_NAME }} # The folder the action should deploy.
+          folder: build/deploy
           target-folder: .
