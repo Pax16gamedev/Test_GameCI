@@ -31,28 +31,27 @@ jobs:
               "tts": false,
               "embeds": [
                 {
-                  "description": ${{ env.STATUS }},
-                  "color": '${{ env.COLOR }}',
+                  "description": "${{ env.STATUS }}",
+                  "color": "${{ env.COLOR }}",
                   "fields": [
-                    { "name": "Rama ", "value": '${{ github.ref_name }}' },
-                    { "name": "Plataforma ", "value": 'TEST_WORKFLOW' },
-                    { "name": "Workflow ", "value": '${{ env.LINK_ACTION }}' },
-                    { "name": "Enlace ", "value": 'TEST_WORKFLOW' },
-                    { "name": "Duración ", "value": 'TEST_WORKFLOW' }
+                    { "name": "Rama ", "value": "${{ github.ref_name }}" },
+                    { "name": "Plataforma ", "value": "TEST_WORKFLOW" },
+                    { "name": "Workflow ", "value": "${{ env.LINK_ACTION }}" },
+                    { "name": "Enlace ", "value": "TEST_WORKFLOW" },
+                    { "name": "Duración ", "value": "TEST_WORKFLOW" }
                   ],
                   "footer": { 
-                    "text": 'GitHub Actions - Discord Integration', 
-                    "icon_url": 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
+                    "text": "GitHub Actions - Discord Integration", 
+                    "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
                   },
                   "author": {
                     "name": "Workflow terminado"
                   },
-                  "timestamp": '${{ env.TIMESTAMP }}'
+                  "timestamp": "${{ env.TIMESTAMP }}"
                 }
               ]
             }
           EOF
-          cat payload.json
 
         # Notify Discord
       - name: Notify Discord
