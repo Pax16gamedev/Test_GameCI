@@ -1,6 +1,8 @@
 # Errores en despliegue WebGL con GH Pages
 
->Unable to parse Build/Roguelike.framework.js.br! This can happen if build compression was enabled but web server hosting the content was misconfigured to not serve the file with HTTP Response Header "Content-Encoding: br" present. Check browser Console and Devtools Network tab to debug.
+**No olvidar que para funcione GH Pages el repositorio debe ser público**
+
+> Unable to parse Build/Roguelike.framework.js.br! This can happen if build compression was enabled but web server hosting the content was misconfigured to not serve the file with HTTP Response Header "Content-Encoding: br" present. Check browser Console and Devtools Network tab to debug.
 
 ## Posibles soluciones: 
 
