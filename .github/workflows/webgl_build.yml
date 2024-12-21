@@ -136,9 +136,9 @@ jobs:
                   "fields": [
                     { "name": "Rama ", "value": "${{ github.ref_name }}" },
                     { "name": "Plataforma ", "value": "${{ matrix.targetPlatform }}" },
-                    { "name": "Workflow ", "value": "${{ env.LINK_ACTION }}" },
+                    { "name": "Workflow ", "value": "[Ir al workflow](${{ env.LINK_ACTION }})" },
                     { "name": "Enlace ", "value": "[Ver WebGL](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})" },
-                    { "name": "Duración ", "value": "TEST_WORKFLOW" }
+                    { "name": "Duración ", "value": "${{ env.formatted_duration }}" }
                   ],
                   "footer": { 
                     "text": "GitHub Actions - Discord Integration", 
