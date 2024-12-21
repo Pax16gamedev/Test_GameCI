@@ -18,8 +18,8 @@ jobs:
             echo "COLOR=15158332" >> $GITHUB_ENV
           fi
 
-          LINK_ACTION="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
-          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ) >> $GITHUB_ENV
+          echo "LINK_ACTION='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'" >> $GITHUB_ENV
+          echo "TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
 
         # Set notification message
       - name: Set Discord Notification Message
@@ -57,10 +57,9 @@ jobs:
       - name: Notify Discord
         if: always()
         run: |
-          MESSAGE="${{ steps.set-message.outputs.message }}"
-          if [ -z "$MESSAGE" ]; then
-            MESSAGE='{"content": "Error al construir el mensaje JSON para Discord."}'
+          if [ ! -f payload.json ]; then
+            echo '{"content": "Error al construir el mensaje JSON para Discord ❌❌❌."}' > payload.json
           fi
           curl -H "Content-Type: application/json" \
-          -d "$MESSAGE" \
+          -d @payload.json \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
