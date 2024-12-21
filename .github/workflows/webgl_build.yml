@@ -77,3 +77,21 @@ jobs:
           branch: gh-pages
           folder: build/${{ matrix.targetPlatform }}
           target-folder: .
+
+        # Set notification message
+      - name: Set Discord Notification Message
+        id: set-message
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "::set-output name=message::✅ Build de tipo ${{ matrix.targetPlatform }} completado para la rama: ${{ github.ref_name }}"
+          else
+            echo "::set-output name=message::❌ Build de tipo ${{ matrix.targetPlatform }} fallido para la rama: ${{ github.ref_name }}"
+          fi
+
+        # Notify Discord
+      - name: Notify Discord
+        if: always()
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{"content": "${{ steps.set-message.outputs.message }}"}' \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
