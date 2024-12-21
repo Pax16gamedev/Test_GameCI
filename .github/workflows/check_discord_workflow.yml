@@ -11,14 +11,14 @@ jobs:
         id: set-vars
         run: |
           if [ "${{ job.status }}" == "success" ]; then
-            echo "STATUS='✅ La build para la rama **${{ github.ref_name }}** se ha completado con éxito.'" >> $GITHUB_ENV
+            echo "STATUS=✅ La build para la rama **${{ github.ref_name }}** se ha completado con éxito." >> $GITHUB_ENV
             echo "COLOR=3066993" >> $GITHUB_ENV
           else
-            echo "STATUS='❌ La build para la rama **${{ github.ref_name }}** ha fallado.'" >> $GITHUB_ENV
+            echo "STATUS=❌ La build para la rama **${{ github.ref_name }}** ha fallado." >> $GITHUB_ENV
             echo "COLOR=15158332" >> $GITHUB_ENV
           fi
 
-          echo "LINK_ACTION='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'" >> $GITHUB_ENV
+          echo "LINK_ACTION=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
           echo "TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
 
         # Set notification message
@@ -32,22 +32,22 @@ jobs:
               "embeds": [
                 {
                   "description": ${{ env.STATUS }},
-                  "color": ${{ env.COLOR }},
+                  "color": '${{ env.COLOR }}',
                   "fields": [
-                    { "name": "Rama ", "value": ${{ github.ref_name }} },
-                    { "name": "Plataforma ", "value": TEST_WORKFLOW },
-                    { "name": "Workflow ", "value": ${{ env.LINK_ACTION }} },
-                    { "name": "Enlace ", "value": TEST_WORKFLOW },
-                    { "name": "Duración ", "value": TEST_WORKFLOW }
+                    { "name": "Rama ", "value": '${{ github.ref_name }}' },
+                    { "name": "Plataforma ", "value": 'TEST_WORKFLOW' },
+                    { "name": "Workflow ", "value": '${{ env.LINK_ACTION }}' },
+                    { "name": "Enlace ", "value": 'TEST_WORKFLOW' },
+                    { "name": "Duración ", "value": 'TEST_WORKFLOW' }
                   ],
                   "footer": { 
-                    "text": GitHub Actions - Discord Integration, 
-                    "icon_url": https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png 
+                    "text": 'GitHub Actions - Discord Integration', 
+                    "icon_url": 'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'
                   },
                   "author": {
                     "name": "Workflow terminado"
                   },
-                  "timestamp": ${{ env.TIMESTAMP }}
+                  "timestamp": '${{ env.TIMESTAMP }}'
                 }
               ]
             }
