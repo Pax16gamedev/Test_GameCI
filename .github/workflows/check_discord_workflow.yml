@@ -11,20 +11,15 @@ jobs:
         id: set-vars
         run: |
           if [ "${{ job.status }}" == "success" ]; then
-            STATUS="✅ La build para la rama **${{ github.ref_name }}** se ha completado con éxito."
-            COLOR=3066993
+            echo "STATUS='✅ La build para la rama **${{ github.ref_name }}** se ha completado con éxito.'" >> $GITHUB_ENV
+            echo "COLOR=3066993" >> $GITHUB_ENV
           else
-            STATUS="❌ La build para la rama **${{ github.ref_name }}** ha fallado."
-            COLOR=15158332
+            echo "STATUS='❌ La build para la rama **${{ github.ref_name }}** ha fallado.'" >> $GITHUB_ENV
+            echo "COLOR=15158332" >> $GITHUB_ENV
           fi
 
-          LINK_ACTION="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-
-          echo "$STATUS" >> $GITHUB_ENV
-          echo "$COLOR" >> $GITHUB_ENV
-          echo "$LINK_ACTION" >> $GITHUB_ENV
-          echo "$TIMESTAMP" >> $GITHUB_ENV
+          LINK_ACTION="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ) >> $GITHUB_ENV
 
         # Set notification message
       - name: Set Discord Notification Message
