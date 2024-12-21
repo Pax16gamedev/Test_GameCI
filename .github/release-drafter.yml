@@ -28,6 +28,8 @@ version-resolver:
   default: patch
 template: |
   ## Versión v$RESOLVED_VERSION
-  
+
   ## What's Changed
   $CHANGES
+
+  **Full Changelog**: https://github.com/$OWNER/$REPO/compare/$PREVIOUS_TAG...$NEW_TAG
