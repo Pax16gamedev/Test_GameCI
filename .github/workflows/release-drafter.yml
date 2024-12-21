@@ -2,10 +2,7 @@ name: Changelog with Release Drafter
 on:
   workflow_dispatch: {}
   pull_request:
-    types: [closed] 
-  push:
-    branches:
-      - PRODUCCION
+    types: [closed]
 jobs:
   update_release_draft:
     runs-on: ubuntu-latest
@@ -21,5 +18,7 @@ jobs:
 
       - name: Set up Release Drafter
         uses: release-drafter/release-drafter@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           config-name: release-drafter.yml
