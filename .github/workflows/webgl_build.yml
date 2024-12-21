@@ -90,8 +90,8 @@ jobs:
         if: always()
         id: duration
         run: |
-          echo "Workflow started at:  ${{ env.START_TIME }}"
-          start_time=$(date -d " ${{ env.START_TIME }}"" +%s)
+          echo "Workflow started at: ${{ env.START_TIME }}"
+          start_time=$(date -d " ${{ env.START_TIME }}" +%s)
           end_time=$(date +%s)
           duration=$((end_time - start_time))
 
