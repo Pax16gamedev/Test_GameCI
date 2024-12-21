@@ -67,7 +67,7 @@ jobs:
           if-no-files-found: 'warn'
 
         # Set notification message
-        - name: Set Discord Notification Message
+      - name: Set Discord Notification Message
         id: set-message
         run: |
           if [ "${{ job.status }}" == "success" ]; then
