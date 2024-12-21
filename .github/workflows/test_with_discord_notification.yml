@@ -37,6 +37,8 @@ jobs:
       UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     steps:
+      - name: Set current date as env variable
+        run: echo "START_TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
       - name: Validate required secrets
         run: |
           if [ -z "${{ secrets.UNITY_EMAIL }}" ] || [ -z "${{ secrets.UNITY_PASSWORD }}" ] || [ -z "${{ secrets.UNITY_LICENSE }}" ]; then
@@ -101,8 +103,8 @@ jobs:
         if: always()
         id: duration
         run: |
-          echo "Workflow started at: ${{ github.event.workflow_run.created_at }}"
-          start_time=$(date -d "${{ github.event.workflow_run.created_at }}" +%s)
+          echo "Workflow started at:  ${{ env.START_TIME }}"
+          start_time=$(date -d " ${{ env.START_TIME }}"" +%s)
           end_time=$(date +%s)
           duration=$((end_time - start_time))
 
@@ -184,6 +186,7 @@ jobs:
       - name: Notify Discord
         if: always()
         run: |
+          echo "${{ steps.set-message.outputs.message }}"
           curl -H "Content-Type: application/json" \
           -d '${{ steps.set-message.outputs.message }}' \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
