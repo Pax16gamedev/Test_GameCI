@@ -1,9 +1,14 @@
-name: Create the WebGL build
+name: Create the WebGL Build
 on:
-  workflow_dispatch: {}
   # push:
   #   branches:
-  #     - main
+  #     - PRE_PRODUCCION
+  #     - PRODUCCION
+  workflow_dispatch: {}
+  workflow_run:
+    workflows: ["Create the Windows Build"]
+    types:
+      - completed
 jobs:
   free-disk-space:
     name: Free space disk on Ubuntu
@@ -30,6 +35,9 @@ jobs:
         targetPlatform:
           - WebGL
     steps:
+      - name: Set current date as env variable
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: Validate required secrets
         run: |
           if [ -z "${{ secrets.UNITY_EMAIL }}" ] || [ -z "${{ secrets.UNITY_PASSWORD }}" ] || [ -z "${{ secrets.UNITY_LICENSE }}" ]; then
@@ -78,9 +86,30 @@ jobs:
           folder: build/${{ matrix.targetPlatform }}
           target-folder: .
 
+      - name: Calculate Build Duration
+        if: always()
+        id: duration
+        run: |
+          echo "Workflow started at:  ${{ env.START_TIME }}"
+          start_time=$(date -d " ${{ env.START_TIME }}"" +%s)
+          end_time=$(date +%s)
+          duration=$((end_time - start_time))
+
+          echo "Start time (epoch): $start_time"
+          echo "End time (epoch): $end_time"
+          echo "Duration (seconds): $duration"
+
+          hours=$((duration / 3600))
+          minutes=$(((duration % 3600) / 60))
+          seconds=$((duration % 60))
+          formatted_duration=$(printf "%02d:%02d:%02d" $hours $minutes $seconds)
+
+          echo "formatted_duration=${formatted_duration}" >> $GITHUB_ENV
+
         # Set notification message
       - name: Set Discord Notification Message
         id: set-message
+        if: always()
         run: |
           if [ "${{ job.status }}" == "success" ]; then
             echo "::set-output name=message::✅ Build de tipo ${{ matrix.targetPlatform }} completado para la rama: ${{ github.ref_name }}"

@@ -1,3 +1,4 @@
+# Jobs en paralelo, pero WebGL se queda sin espacio
 name: Build Unity Project for WebGL and StandaloneWindows64
 on:
   workflow_dispatch: {}
@@ -38,7 +39,8 @@ jobs:
       UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     steps:
       - name: Set current date as env variable
-        run: echo "START_TIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: Validate required secrets
         run: |
           if [ -z "${{ secrets.UNITY_EMAIL }}" ] || [ -z "${{ secrets.UNITY_PASSWORD }}" ] || [ -z "${{ secrets.UNITY_LICENSE }}" ]; then
@@ -81,6 +83,7 @@ jobs:
 
       - name: Get Artifact ID
         id: get-artifact-id
+        if: ${{ matrix.targetPlatform == 'StandaloneWindows64' }}
         run: |
           artifacts=$(curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
               -H "Accept: application/vnd.github+json" \
@@ -158,8 +161,8 @@ jobs:
             --arg resultLink "[$LINK_TEXT]($LINK)" \
             --arg duracion "${{ env.formatted_duration }}" \
             --arg timestamp "$TIMESTAMP" \
-            '
-             {"tts": false,
+            '{
+              "tts": false,
               "embeds": [
                 {
                   "description": $description,
@@ -179,7 +182,7 @@ jobs:
                 }
               ]
             }')
-
+          echo "Variable embed = \n$EMBED"
           echo "message=$EMBED" >> $GITHUB_OUTPUT
 
         # Notify Discord

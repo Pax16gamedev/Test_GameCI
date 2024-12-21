@@ -1,47 +1,58 @@
-name: Create the Windows build
+name: Create the Windows Build
 on:
   workflow_dispatch: {}
+  push:
+    branches:
+      - PRE_PRODUCCION
+      - PRODUCCION
 jobs:
   free-disk-space:
     name: Free space disk on Ubuntu
     runs-on: ubuntu-latest
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
+    - name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        tool-cache: false
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: true
+        docker-images: true
+        swap-storage: true
 
   build:
     name: Build ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
-    needs: free-disk-space # Asegura que este trabajo se ejecute después de liberar espacio
+    needs: free-disk-space 
     strategy:
+      fail-fast: false
       matrix:
         targetPlatform:
-          - StandaloneWindows64 # Build a Windows 64-bit standalone
+          - StandaloneWindows64
     env:
+      UNITY_VERSION: ${{ vars.UNITY_VERSION }}
       UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
       UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
     steps:
+      - name: Set current date as env variable
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: Validate required secrets
         run: |
           if [ -z "${{ secrets.UNITY_EMAIL }}" ] || [ -z "${{ secrets.UNITY_PASSWORD }}" ] || [ -z "${{ secrets.UNITY_LICENSE }}" ]; then
             echo "Required secrets are missing. Please check UNITY_EMAIL, UNITY_PASSWORD, and UNITY_LICENSE."
             exit 1
           fi
-
+      
+      # Checkout
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
-
+      
+      # Cache
       - name: Cache
         uses: actions/cache@v4
         with:
@@ -51,6 +62,7 @@ jobs:
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: Library-
 
+        # Build
       - name: Build
         uses: game-ci/unity-builder@v4
         with:
@@ -59,15 +71,48 @@ jobs:
           versioning: Semantic
           buildName: ${{ vars.PROJECT_NAME }}
 
+      # Upload Build
       - name: Upload Build
         uses: actions/upload-artifact@v4
         with:
-          name: Build-${{ matrix.targetPlatform }}-${{ github.run_id }}
+          name: Build-${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}-${{ github.run_id }}
           path: build/${{ matrix.targetPlatform }}
           if-no-files-found: 'warn'
 
+      - name: Get Artifact ID
+        id: get-artifact-id
+        run: |
+          artifacts=$(curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts")
+
+          artifact_id=$(echo "$artifacts" | jq '.artifacts[0].id')
+          echo "Artifact ID: $artifact_id"
+          echo "artifact_id=$artifact_id" >> $GITHUB_OUTPUT
+
+      - name: Calculate Build Duration
+        if: always()
+        id: duration
+        run: |
+          echo "Workflow started at:  ${{ env.START_TIME }}"
+          start_time=$(date -d " ${{ env.START_TIME }}"" +%s)
+          end_time=$(date +%s)
+          duration=$((end_time - start_time))
+
+          echo "Start time (epoch): $start_time"
+          echo "End time (epoch): $end_time"
+          echo "Duration (seconds): $duration"
+
+          hours=$((duration / 3600))
+          minutes=$(((duration % 3600) / 60))
+          seconds=$((duration % 60))
+          formatted_duration=$(printf "%02d:%02d:%02d" $hours $minutes $seconds)
+
+          echo "formatted_duration=${formatted_duration}" >> $GITHUB_ENV
+
         # Set notification message
       - name: Set Discord Notification Message
+        if: always()
         id: set-message
         run: |
           if [ "${{ job.status }}" == "success" ]; then
