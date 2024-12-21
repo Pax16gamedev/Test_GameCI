@@ -26,3 +26,8 @@ version-resolver:
     labels:
       - 'patch'
   default: patch
+template: |
+  ## Versión v$RESOLVED_VERSION
+  
+  ## What's Changed
+  $CHANGES

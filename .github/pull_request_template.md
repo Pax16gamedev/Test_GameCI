@@ -14,6 +14,7 @@ Describe aquí como probar los cambios.
     - feature/<nombre>
     - bugfix/<nombre>
     - hotfix/<nombre>
+    - fix/<nombre>
     - enhancement/<nombre>
     - refactor/<nombre>
     - documentation/<nombre>

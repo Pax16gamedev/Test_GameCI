@@ -9,6 +9,8 @@ Para mantener la consistencia y facilitar la gestión del código, todas las ram
   - Ejemplo: `bugfix/fix-character-animation`
 - **`hotfix/<nombre>`**: Para resolver problemas críticos en producción.
   - Ejemplo: `hotfix/fix-game-crash`
+- **`fix/<nombre>`**: Para corregir problemas en desarrollo.
+  - Ejemplo: `fix/player-movement`
 - **`enhancement/<nombre>`**: Para mejoras en funcionalidades existentes.
   - Ejemplo: `enhancement/improve-ai-logic`
 - **`refactor/<nombre>`**: Para reorganizar o limpiar código sin cambiar su funcionalidad.
