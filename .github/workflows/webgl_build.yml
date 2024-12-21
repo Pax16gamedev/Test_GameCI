@@ -14,16 +14,16 @@ jobs:
     name: Free space disk on Ubuntu
     runs-on: ubuntu-latest
     steps:
-    - name: Free Disk Space (Ubuntu)
-      uses: jlumbroso/free-disk-space@main
-      with:
-        tool-cache: false
-        android: true
-        dotnet: true
-        haskell: true
-        large-packages: true
-        docker-images: true
-        swap-storage: true
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
 
   build:
     name: Build ${{ matrix.targetPlatform }}
@@ -69,14 +69,14 @@ jobs:
           unityVersion: ${{ vars.UNITY_VERSION }}
           versioning: Semantic
           buildName: ${{ vars.PROJECT_NAME }}
-     
+
       # Upload Build
       - name: Upload the WebGL Build
         uses: actions/upload-artifact@v4
         with:
           name: Build ${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}-${{ github.run_id }}
           path: build/${{ matrix.targetPlatform }}
-          if-no-files-found: 'warn'
+          if-no-files-found: "warn"
 
       # Deploy to GH
       - name: Deploy to GitHub Pages
@@ -110,56 +110,56 @@ jobs:
         if: always()
         id: set-vars
         run: |
-            if [ "${{ job.status }}" == "success" ]; then
-              echo "STATUS=✅ La build ${{ matrix.targetPlatform }} para la rama **${{ github.ref_name }}** se ha completado con éxito." >> $GITHUB_ENV
-              echo "COLOR=3066993" >> $GITHUB_ENV
-            else
-              echo "STATUS=❌ La build ${{ matrix.targetPlatform }} para la rama **${{ github.ref_name }}** ha fallado." >> $GITHUB_ENV
-              echo "COLOR=15158332" >> $GITHUB_ENV
-            fi
-  
-            echo "LINK_ACTION=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
-            echo "TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
-  
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "STATUS=✅ La build ${{ matrix.targetPlatform }} para la rama **${{ github.ref_name }}** se ha completado con éxito." >> $GITHUB_ENV
+            echo "COLOR=3066993" >> $GITHUB_ENV
+          else
+            echo "STATUS=❌ La build ${{ matrix.targetPlatform }} para la rama **${{ github.ref_name }}** ha fallado." >> $GITHUB_ENV
+            echo "COLOR=15158332" >> $GITHUB_ENV
+          fi
+
+          echo "LINK_ACTION=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
+          echo "TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
+
       # Set notification message
       - name: Set Discord Notification Message
         if: always()
         id: set-message
         run: |
-            cat <<EOF > payload.json
-            {
-                "tts": false,
-                "embeds": [
-                  {
-                    "description": "${{ env.STATUS }}",
-                    "color": "${{ env.COLOR }}",
-                    "fields": [
-                      { "name": "Rama ", "value": "${{ github.ref_name }}" },
-                      { "name": "Plataforma ", "value": "${{ matrix.targetPlatform }}" },
-                      { "name": "Workflow ", "value": "${{ env.LINK_ACTION }}" },
-                      { "name": "Enlace ", "value": "[Ver WebGL](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})" },
-                      { "name": "Duración ", "value": "TEST_WORKFLOW" }
-                    ],
-                    "footer": { 
-                      "text": "GitHub Actions - Discord Integration", 
-                      "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-                    },
-                    "author": {
-                      "name": "Workflow terminado"
-                    },
-                    "timestamp": "${{ env.TIMESTAMP }}"
-                  }
-                ]
-              }
-            EOF
-  
+          cat <<EOF > payload.json
+          {
+              "tts": false,
+              "embeds": [
+                {
+                  "description": "${{ env.STATUS }}",
+                  "color": "${{ env.COLOR }}",
+                  "fields": [
+                    { "name": "Rama ", "value": "${{ github.ref_name }}" },
+                    { "name": "Plataforma ", "value": "${{ matrix.targetPlatform }}" },
+                    { "name": "Workflow ", "value": "${{ env.LINK_ACTION }}" },
+                    { "name": "Enlace ", "value": "[Ver WebGL](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})" },
+                    { "name": "Duración ", "value": "TEST_WORKFLOW" }
+                  ],
+                  "footer": { 
+                    "text": "GitHub Actions - Discord Integration", 
+                    "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                  },
+                  "author": {
+                    "name": "Workflow terminado"
+                  },
+                  "timestamp": "${{ env.TIMESTAMP }}"
+                }
+              ]
+            }
+          EOF
+
       # Notify Discord
       - name: Notify Discord
         if: always()
         run: |
-            if [ ! -f payload.json ]; then
-              echo '{"content": "Error al construir el mensaje JSON para Discord ❌❌❌."}' > payload.json
-            fi
-            curl -H "Content-Type: application/json" \
-            -d @payload.json \
-            ${{ secrets.DISCORD_WEBHOOK_URL }}
+          if [ ! -f payload.json ]; then
+            echo '{"content": "Error al construir el mensaje JSON para Discord ❌❌❌."}' > payload.json
+          fi
+          curl -H "Content-Type: application/json" \
+          -d @payload.json \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}

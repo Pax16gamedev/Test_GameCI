@@ -16,9 +16,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set formatted date
+        run: echo "RELEASE_DATE=$(date +'%d/%m/%Y')" >> $GITHUB_ENV
+
       - name: Set up Release Drafter
         uses: release-drafter/release-drafter@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DATE: ${{ env.RELEASE_DATE }}
         with:
           config-name: release-drafter.yml

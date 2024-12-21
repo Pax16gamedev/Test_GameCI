@@ -27,9 +27,10 @@ version-resolver:
       - 'patch'
   default: patch
 template: |
-  ## Versión v$RESOLVED_VERSION
+  ## [v$RESOLVED_VERSION] - $DATE
+  Este archivo contiene un resumen de los cambios introducidos en cada versión.
 
-  ## What's Changed
+  ## Cambios
   $CHANGES
 
   **Full Changelog**: https://github.com/$OWNER/$REPO/compare/$PREVIOUS_TAG...$NEW_TAG

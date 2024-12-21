@@ -22,7 +22,7 @@ jobs:
           path: Library
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: Library-
-      
+
       # Run tests
       - name: Run EditMode and PlayMode Test
         uses: game-ci/unity-test-runner@v4

@@ -3,7 +3,7 @@ on:
   workflow_dispatch: {}
 jobs:
   discord-integration:
-    name: Discord integration 
+    name: Discord integration
     runs-on: ubuntu-latest
     steps:
       - name: Set variables

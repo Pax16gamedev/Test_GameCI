@@ -20,4 +20,3 @@ jobs:
             echo "Error: El nombre de la rama '$branch_name' no cumple con la convención."
             exit 1
           fi
-
