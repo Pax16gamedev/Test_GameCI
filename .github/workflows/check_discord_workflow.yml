@@ -6,10 +6,9 @@ jobs:
     name: Discord integration 
     runs-on: ubuntu-latest
     steps:
-        # Set notification message
-      - name: Set Discord Notification Message
+      - name: Set variables
         if: always()
-        id: set-message
+        id: set-vars
         run: |
           if [ "${{ job.status }}" == "success" ]; then
             STATUS="✅ La build para la rama **${{ github.ref_name }}** se ha completado con éxito."
@@ -22,47 +21,51 @@ jobs:
           LINK_ACTION="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
-          EMBED=$(jq -n \
-            --arg description "$STATUS" \
-            --argjson color $COLOR \
-            --arg footerText "GitHub Actions - Discord Integration" \
-            --arg footerIcon "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" \
-            --arg rama "${{ github.ref_name }}" \
-            --arg plataforma "TEST_WORKFLOW" \
-            --arg workflowLink "[Ver detalles](TEST_WORKFLOW)" \
-            --arg linkText "TEST_WORKFLOW" \
-            --arg resultLink "[$LINK_TEXT]($LINK)" \
-            --arg duracion "TEST_WORKFLOW" \
-            --arg timestamp "$TIMESTAMP" \
-            {
+          echo "$STATUS" >> $GITHUB_ENV
+          echo "$COLOR" >> $GITHUB_ENV
+          echo "$LINK_ACTION" >> $GITHUB_ENV
+          echo "$TIMESTAMP" >> $GITHUB_ENV
+
+        # Set notification message
+      - name: Set Discord Notification Message
+        if: always()
+        id: set-message
+        run: |
+          cat <<EOF > payload.json
+          {
               "tts": false,
               "embeds": [
                 {
-                  "description": $description,
-                  "color": $color,
-                  "footer": { "text": $footerText, "icon_url": $footerIcon },
+                  "description": ${{ env.STATUS }},
+                  "color": ${{ env.COLOR }},
                   "fields": [
-                    { "name": "Rama ", "value": $rama },
-                    { "name": "Plataforma ", "value": $plataforma },
-                    { "name": "Workflow ", "value": $workflowLink },
-                    { "name": "Enlace ", "value": $resultLink },
-                    { "name": "Duración ", "value": $duracion }
+                    { "name": "Rama ", "value": ${{ github.ref_name }} },
+                    { "name": "Plataforma ", "value": TEST_WORKFLOW },
+                    { "name": "Workflow ", "value": ${{ env.LINK_ACTION }} },
+                    { "name": "Enlace ", "value": TEST_WORKFLOW },
+                    { "name": "Duración ", "value": TEST_WORKFLOW }
                   ],
+                  "footer": { 
+                    "text": GitHub Actions - Discord Integration, 
+                    "icon_url": https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png 
+                  },
                   "author": {
                     "name": "Workflow terminado"
                   },
-                  "timestamp": $timestamp
+                  "timestamp": ${{ env.TIMESTAMP }}
                 }
               ]
-            })
-          echo "Variable embed = \n$EMBED"
-          echo "message=$EMBED" >> $GITHUB_OUTPUT
+            }
+          EOF
 
         # Notify Discord
       - name: Notify Discord
         if: always()
         run: |
-          echo "${{ steps.set-message.outputs.message }}"
+          MESSAGE="${{ steps.set-message.outputs.message }}"
+          if [ -z "$MESSAGE" ]; then
+            MESSAGE='{"content": "Error al construir el mensaje JSON para Discord."}'
+          fi
           curl -H "Content-Type: application/json" \
-          -d '${{ steps.set-message.outputs.message }}' \
+          -d "$MESSAGE" \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
