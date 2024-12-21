@@ -1,6 +1,11 @@
 name: Changelog with Release Drafter
 on:
   workflow_dispatch: {}
+  pull_request:
+    types: [closed] 
+  push:
+    branches:
+      - PRODUCCION
 jobs:
   update_release_draft:
     runs-on: ubuntu-latest

@@ -1,8 +1,8 @@
 name: Validate Branch Name
 on:
+  workflow_dispatch: {}
   pull_request:
-    branches:
-      - DESARROLLO
+    types: [opened]
 jobs:
   validate_branch_name:
     runs-on: ubuntu-latest
@@ -13,7 +13,11 @@ jobs:
 
       - name: Check Branch Name
         run: |
-          if [[ ! "${{ github.head_ref }}" =~ ^(feature|bugfix|hotfix)\/.*$ ]]; then
-            echo "Error: La rama debe comenzar con 'feature/', 'bugfix/' o 'hotfix/'"
+          branch_name="${{ github.head_ref }}"
+          valid_pattern="^(feature|enhancement|bugfix|hotfix||refactor|documentation)/[a-z0-9._-]+$"
+
+          if [[ ! $branch_name =~ $valid_pattern ]]; then
+            echo "Error: El nombre de la rama '$branch_name' no cumple con la convención."
             exit 1
           fi
+

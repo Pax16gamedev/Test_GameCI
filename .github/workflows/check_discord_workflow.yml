@@ -1,10 +1,6 @@
 name: Check Discord Workflow
 on:
   workflow_dispatch: {}
-  push:
-    branches:
-      - PRE_PRODUCCION
-      - PRODUCCION
 jobs:
   discord-integration:
     name: Discord integration 
@@ -32,13 +28,13 @@ jobs:
             --arg footerText "GitHub Actions - Discord Integration" \
             --arg footerIcon "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" \
             --arg rama "${{ github.ref_name }}" \
-            --arg plataforma "TEST_WORFLOW" \
-            --arg workflowLink "[Ver detalles]($LINK_ACTION)" \
-            --arg linkText "$LINK_TEXT" \
+            --arg plataforma "TEST_WORKFLOW" \
+            --arg workflowLink "[Ver detalles](TEST_WORKFLOW)" \
+            --arg linkText "TEST_WORKFLOW" \
             --arg resultLink "[$LINK_TEXT]($LINK)" \
-            --arg duracion "TEST_WORFLOW" \
+            --arg duracion "TEST_WORKFLOW" \
             --arg timestamp "$TIMESTAMP" \
-            '{
+            {
               "tts": false,
               "embeds": [
                 {
@@ -58,7 +54,7 @@ jobs:
                   "timestamp": $timestamp
                 }
               ]
-            }')
+            })
           echo "Variable embed = \n$EMBED"
           echo "message=$EMBED" >> $GITHUB_OUTPUT
 
