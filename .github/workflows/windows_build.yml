@@ -56,23 +56,18 @@ jobs:
         uses: game-ci/unity-builder@v4
         with:
           targetPlatform: ${{ matrix.targetPlatform }}
-          unityVersion: 6000.0.25f1
+          unityVersion: ${{ vars.UNITY_VERSION }}
           versioning: Semantic
           buildName: ${{ vars.PROJECT_NAME }}
 
-      - name: Ensure Build Directory and Permissions
-        run: |
-          mkdir -p build/${{ matrix.targetPlatform }}
-          chmod -R 777 build
-
-      - name: Compress Build
-        run: |
-          zip -r build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip build/${{ matrix.targetPlatform }}/*
-          mv build/${{ matrix.targetPlatform }}/*.zip build/
+      # - name: Compress Build
+      #   run: |
+      #     zip -r build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip build/${{ matrix.targetPlatform }}/*
+      #     mv build/${{ matrix.targetPlatform }}/*.zip build/
 
       - name: Upload Build
         uses: actions/upload-artifact@v4
         with:
           name: Build-${{ matrix.targetPlatform }}-${{ github.run_id }}
-          path: build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip
+          path: build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}
           if-no-files-found: 'warn'

@@ -58,22 +58,22 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: WebGL
-          unityVersion: 6000.0.25f1
+          unityVersion: ${{ vars.UNITY_VERSION }}
           versioning: Semantic
           buildName: ${{ vars.PROJECT_NAME }}
 
       # ZIP
-      - name: Compress and move Build
-        run: |
-          zip -r build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip build/${{ matrix.targetPlatform }}/*
-          mv build/${{ matrix.targetPlatform }}/*.zip build/
+      # - name: Compress and move Build
+      #   run: |
+      #     zip -r build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip build/${{ matrix.targetPlatform }}/*
+      #     mv build/${{ matrix.targetPlatform }}/*.zip build/
      
       # Upload Build
       - name: Upload the WebGL Build
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}-${{ github.run_id }}
-          path: build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip
+          path: build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}
 
       # Create deployment folder
       - name: Prepare Deployment Folder
