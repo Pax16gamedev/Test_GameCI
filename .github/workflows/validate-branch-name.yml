@@ -2,11 +2,15 @@ name: Validate Branch Name
 on:
   pull_request:
     branches:
-      - desarrollo
+      - DESARROLLO
 jobs:
   validate_branch_name:
     runs-on: ubuntu-latest
     steps:
+      # Checkout
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Check Branch Name
         run: |
           if [[ ! "${{ github.head_ref }}" =~ ^(feature|bugfix|hotfix)\/.*$ ]]; then

@@ -1,4 +1,4 @@
-name: Run the Windows build
+name: Create the Windows build
 on:
   workflow_dispatch: {}
 jobs:
@@ -11,10 +11,10 @@ jobs:
         with:
           tool-cache: false
           android: true
-          dotnet: false
+          dotnet: true
           haskell: true
-          large-packages: false
-          docker-images: false
+          large-packages: true
+          docker-images: true
           swap-storage: true
 
   build:
@@ -22,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: free-disk-space # Asegura que este trabajo se ejecute después de liberar espacio
     strategy:
-      fail-fast: true # Detiene la ejecución si un build falla
       matrix:
         targetPlatform:
           - StandaloneWindows64 # Build a Windows 64-bit standalone
@@ -60,14 +59,9 @@ jobs:
           versioning: Semantic
           buildName: ${{ vars.PROJECT_NAME }}
 
-      # - name: Compress Build
-      #   run: |
-      #     zip -r build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}.zip build/${{ matrix.targetPlatform }}/*
-      #     mv build/${{ matrix.targetPlatform }}/*.zip build/
-
       - name: Upload Build
         uses: actions/upload-artifact@v4
         with:
           name: Build-${{ matrix.targetPlatform }}-${{ github.run_id }}
-          path: build/${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
           if-no-files-found: 'warn'
