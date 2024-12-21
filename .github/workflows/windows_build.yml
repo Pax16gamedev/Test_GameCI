@@ -95,7 +95,7 @@ jobs:
         id: duration
         run: |
           echo "Workflow started at: ${{ env.START_TIME }}"
-          start_time=$(date -d "${{ env.START_TIME }}" +%s)
+          start_time=${{ env.START_TIME }}
           end_time=$(date +%s)
           duration=$((end_time - start_time))
 
