@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private int ISMA;
+    private int ISMA2;
 
     void Start()
     {
