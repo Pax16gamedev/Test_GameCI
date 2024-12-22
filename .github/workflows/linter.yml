@@ -1,0 +1,17 @@
+name: Linter Check
+on:
+  pull_request:
+    branches:
+      - DESARROLLO
+jobs:
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dotnet-format
+        run: dotnet tool install -g dotnet-format
+
+      - name: Run dotnet-format
+        run: dotnet format --check
