@@ -14,7 +14,7 @@ jobs:
       - name: Check Branch Name
         run: |
           branch_name="${{ github.head_ref }}"
-          valid_pattern="^(feature|enhancement|bugfix|hotfix|fix|refactor|documentation)/[a-z0-9._-]+$"
+          valid_pattern="^(feature|enhancement|bugfix|hotfix|fix|refactor|documentation)/[a-zA-Z0-9._-]+$"
 
           if [[ ! $branch_name =~ $valid_pattern ]]; then
             echo "Error: El nombre de la rama '$branch_name' no cumple con la convención."
