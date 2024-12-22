@@ -145,7 +145,7 @@ jobs:
                   "fields": [
                     { "name": "🌿 Rama ", "value": "${{ github.ref_name }}" },
                     { "name": "🎮 Plataforma ", "value": "${{ matrix.targetPlatform }}" },
-                    { "name": "🔗 Enlace ", "value": "[Ver artifact](https://api.github.com/repos/${{ github.repository }}/actions/artifacts)" },
+                    { "name": "🔗 Enlace ", "value": "[Ver artifact](${{ env.LINK_ACTION }}#artifacts)" },
                     { "name": "⏱️ Duración ", "value": "${{ env.formatted_duration }}" }
                   ],
                   "footer": {
