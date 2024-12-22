@@ -57,6 +57,17 @@ jobs:
             Temp
           key: Library-${{ matrix.targetPlatform }}
 
+      - name: Clean /tmp and /opt
+        run: |
+          sudo rm -rf /tmp/*
+          sudo rm -rf /opt/*
+
+      - name: Check disk space after cleanup
+        run: |
+          echo "Espacio en el disco después de la limpieza:"
+          df -h
+        
+
       # Build
       - name: Create the WebGL build
         uses: game-ci/unity-builder@v4
@@ -69,6 +80,12 @@ jobs:
           unityVersion: ${{ vars.UNITY_VERSION }}
           versioning: Semantic
           buildName: ${{ vars.PROJECT_NAME }}
+
+      - name: Measure Build Folder Size
+        run: |
+          echo "Build folder size:"
+          du -sh build/${{ matrix.targetPlatform }} || echo "Build folder not found."
+        
 
       # Upload Build
       - name: Upload the WebGL Build
@@ -113,11 +130,11 @@ jobs:
           if [ "${{ job.status }}" == "success" ]; then
             echo "STATUS=✅ La build ${{ matrix.targetPlatform }} para la rama **${{ github.ref_name }}** se ha completado con éxito." >> $GITHUB_ENV
             echo "COLOR=3066993" >> $GITHUB_ENV
-            echo "THUMBNAIL_URL="https://e7.pngegg.com/pngimages/223/663/png-clipart-green-check-illustration-check-mark-checkbox-yes-miscellaneous-angle.png" >> $GITHUB_ENV"
+            echo "THUMBNAIL_URL="https://e7.pngegg.com/pngimages/223/663/png-clipart-green-check-illustration-check-mark-checkbox-yes-miscellaneous-angle.png" >> $GITHUB_ENV
           else
             echo "STATUS=❌ La build ${{ matrix.targetPlatform }} para la rama **${{ github.ref_name }}** ha fallado." >> $GITHUB_ENV
             echo "COLOR=15158332" >> $GITHUB_ENV
-            echo "THUMBNAIL_URL="https://e1.pngegg.com/pngimages/720/726/png-clipart-emoji-sticker-x-icon.png" >> $GITHUB_ENV"
+            echo "THUMBNAIL_URL="https://e1.pngegg.com/pngimages/720/726/png-clipart-emoji-sticker-x-icon.png" >> $GITHUB_ENV
           fi
 
           echo "LINK_ACTION=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
