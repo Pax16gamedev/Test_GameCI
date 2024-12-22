@@ -22,6 +22,97 @@ Para mantener la consistencia y facilitar la gestión del código, todas las ram
 - Usa nombres descriptivos para las ramas.
 - Evita caracteres especiales o espacios en los nombres de las ramas.
 
+[Ver proceso para crear una PR](#proceso-para-crear-un-pull-request-pr)
+
+---
+
+# Convención para el estilo y formateo de código (Linter)
+
+Este repositorio utiliza un archivo `.editorconfig` para mantener un estilo de código consistente y facilitar la colaboración entre los desarrolladores. A continuación, se detallan las reglas del linter y su configuración.
+
+
+## Ubicación del archivo `.editorconfig`
+El archivo `.editorconfig` se encuentra en la raíz del proyecto, lo que asegura que las reglas se apliquen a todos los archivos relevantes del repositorio.
+
+
+## Reglas principales
+
+### 1. **Formato general**
+- **Estilo de indentación:** Espacios (4 espacios por nivel).
+- **Codificación:** UTF-8.
+- **Líneas en blanco:**
+  - Se eliminan espacios en blanco al final de cada línea.
+  - Se inserta una nueva línea al final de cada archivo.
+- **Longitud de líneas:** Máximo de 140 caracteres.
+
+### 2. **Espaciado**
+- Se agrega un espacio después de palabras clave en los operadores:
+  ```csharp
+  int result = a + b;
+  ```
+
+### 3. **Orden de directivas `using`**
+- Las directivas del sistema (`System`) deben estar primero.
+  ```csharp
+  using System;
+  using UnityEngine;
+  using MyNamespace;
+  ```
+
+### 4. **Nombres de variables y campos**
+- **Privados:** CamelCase sin prefijo.
+  ```csharp
+  private int health;
+  ```
+- **Públicos y propiedades:** PascalCase.
+  ```csharp
+  public int Health { get; set; }
+  ```
+
+### 5. **Buenas prácticas**
+- Usar `var` solo cuando el tipo es evidente:
+  ```csharp
+  var playerName = "John"; // Correcto
+  Player player = new Player(); // Mejor que usar var
+  ```
+- Eliminar variables y directivas sin usar.
+- Evitar capturas genéricas de excepciones:
+  ```csharp
+  try
+  {
+      DoSomething();
+  }
+  catch(SpecificException ex)
+  {
+      LogError(ex);
+  }
+  ```
+
+---
+
+## Uso local del Linter (solo si no usas Visual Studio o Rider)
+
+### Requisitos
+- Tener `dotnet-format` instalado:
+  ```bash
+  dotnet tool install -g dotnet-format
+  ```
+
+### Comandos disponibles
+- **Revisar el formato del código:**
+  ```bash
+  dotnet format --check
+  ```
+- **Corregir problemas de formato:**
+  ```bash
+  dotnet format
+  ```
+
+## Buenas prácticas adicionales
+- Ejecuta el linter localmente antes de hacer un commit.
+- Actualiza el archivo `.editorconfig` si cambian los estándares del proyecto.
+- Usa herramientas del IDE (como Visual Studio o Rider) que soporten `.editorconfig` para aplicar las reglas en tiempo real.
+
 ---
 
 ## Proceso para crear un Pull Request (PR)
