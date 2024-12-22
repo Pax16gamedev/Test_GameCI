@@ -117,11 +117,11 @@ jobs:
           if [ "${{ job.status }}" == "success" ]; then
             echo "STATUS=✅ La build ${{ matrix.targetPlatform }} para la rama **${{ github.ref_name }}** se ha completado con éxito." >> $GITHUB_ENV
             echo "COLOR=3066993" >> $GITHUB_ENV
-            echo "THUMBNAIL_URL="https://e7.pngegg.com/pngimages/223/663/png-clipart-green-check-illustration-check-mark-checkbox-yes-miscellaneous-angle.png" >> $GITHUB_ENV
+            echo "THUMBNAIL_URL=https://e7.pngegg.com/pngimages/223/663/png-clipart-green-check-illustration-check-mark-checkbox-yes-miscellaneous-angle.png" >> $GITHUB_ENV
           else
             echo "STATUS=❌ La build ${{ matrix.targetPlatform }} para la rama **${{ github.ref_name }}** ha fallado." >> $GITHUB_ENV
             echo "COLOR=15158332" >> $GITHUB_ENV
-            echo "THUMBNAIL_URL="https://e1.pngegg.com/pngimages/720/726/png-clipart-emoji-sticker-x-icon.png" >> $GITHUB_ENV
+            echo "THUMBNAIL_URL=https://e1.pngegg.com/pngimages/720/726/png-clipart-emoji-sticker-x-icon.png" >> $GITHUB_ENV
           fi
 
           echo "LINK_ACTION=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
@@ -168,6 +168,13 @@ jobs:
           if [ ! -f payload.json ]; then
             echo '{"content": "Error al construir el mensaje JSON para Discord ❌❌❌."}' > payload.json
           fi
-          curl -H "Content-Type: application/json" \
-          -d @payload.json \
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+          
+          response_code=$(curl -s -o /dev/null -w "%{http_code}" -H "Content-Type: application/json" -d @payload.json ${{ secrets.DISCORD_WEBHOOK_URL }})
+
+          if [ "$response_code" -ge 400 ]; then
+            echo "Error: Discord API devolvió un código de estado $response_code ❌."
+            echo '{"content": "Error al enviar el mensaje a Discord ❌. [Ver workflow](${{ env.LINK_ACTION }})"}' > payload.json
+            curl -s -H "Content-Type: application/json" -d @payload.json ***
+          else
+            echo "Mensaje enviado con éxito ✅."
+          fi
