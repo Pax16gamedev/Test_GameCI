@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     private int ISMA2a;
+    private int ISMA2b;
 
     void Start()
     {
