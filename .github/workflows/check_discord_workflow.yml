@@ -13,9 +13,12 @@ jobs:
           if [ "${{ job.status }}" == "success" ]; then
             echo "STATUS=✅ La build para la rama **${{ github.ref_name }}** se ha completado con éxito." >> $GITHUB_ENV
             echo "COLOR=3066993" >> $GITHUB_ENV
+            echo "THUMBNAIL_URL="https://e7.pngegg.com/pngimages/223/663/png-clipart-green-check-illustration-check-mark-checkbox-yes-miscellaneous-angle.png" >> $GITHUB_ENV"
+
           else
             echo "STATUS=❌ La build para la rama **${{ github.ref_name }}** ha fallado." >> $GITHUB_ENV
             echo "COLOR=15158332" >> $GITHUB_ENV
+            echo "THUMBNAIL_URL="https://e1.pngegg.com/pngimages/720/726/png-clipart-emoji-sticker-x-icon.png" >> $GITHUB_ENV"
           fi
 
           echo "LINK_ACTION=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
@@ -31,21 +34,22 @@ jobs:
               "tts": false,
               "embeds": [
                 {
+                  "title": "👷 Workflow terminado",
+                  "url": "${{ env.LINK_ACTION }}",
                   "description": "${{ env.STATUS }}",
                   "color": "${{ env.COLOR }}",
                   "fields": [
-                    { "name": "Rama ", "value": "${{ github.ref_name }}" },
-                    { "name": "Plataforma ", "value": "TEST_WORKFLOW" },
-                    { "name": "Workflow ", "value": "${{ env.LINK_ACTION }}" },
-                    { "name": "Enlace ", "value": "TEST_WORKFLOW" },
-                    { "name": "Duración ", "value": "TEST_WORKFLOW" }
+                    { "name": "🌿 Rama ", "value": "${{ github.ref_name }}" },
+                    { "name": "🎮 Plataforma ", "value": "TEST_WORKFLOW" },
+                    { "name": "🔗 Enlace ", "value": "TEST_WORKFLOW" },
+                    { "name": "⏱️ Duración ", "value": "TEST_WORKFLOW" }
                   ],
                   "footer": { 
-                    "text": "GitHub Actions - Discord Integration", 
+                    "text": "GitHub Actions - Proyecto: ${{ vars.PROJECT_NAME }}", 
                     "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
                   },
-                  "author": {
-                    "name": "Workflow terminado"
+                  "thumbnail": {
+                    "url": "${{ env.THUMBNAIL_URL }}"
                   },
                   "timestamp": "${{ env.TIMESTAMP }}"
                 }
