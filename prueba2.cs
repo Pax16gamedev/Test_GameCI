@@ -9,5 +9,6 @@ public class EnemySpawner : MonoBehaviour
     {
         print("Start");
         print(1+1)
+        print(1 + 1)
     }
 }
