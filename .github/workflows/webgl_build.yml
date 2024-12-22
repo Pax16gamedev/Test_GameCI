@@ -79,7 +79,7 @@ jobs:
           targetPlatform: WebGL
           unityVersion: ${{ vars.UNITY_VERSION }}
           versioning: Semantic
-          buildName: ${{ vars.PROJECT_NAME }}
+          buildName: ${{ vars.PROJECT_NAME }} # `build/Project_Name`
 
       - name: Measure Build Folder Size
         run: |
@@ -94,6 +94,11 @@ jobs:
           name: Build ${{ vars.PROJECT_NAME }}-${{ matrix.targetPlatform }}-${{ github.run_id }}
           path: build/${{ matrix.targetPlatform }}
           if-no-files-found: "warn"
+
+      - name: Move WebGL Build to Root
+        run: |
+          mv build/${{ vars.PROJECT_NAME }}/* build/
+          rm -rf build/${{ vars.PROJECT_NAME }}
 
       # Deploy to GH
       - name: Deploy to GitHub Pages
