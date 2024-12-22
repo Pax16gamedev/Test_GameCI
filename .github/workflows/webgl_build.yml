@@ -97,15 +97,15 @@ jobs:
 
       - name: Move WebGL Build to Root
         run: |
-          mv build/${{ vars.PROJECT_NAME }}/* build/
-          rm -rf build/${{ vars.PROJECT_NAME }}
+          mv build/${{ matrix.targetPlatform }}/* build/
+          rm -rf build/${{ matrix.targetPlatform }}
 
       # Deploy to GH
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
           branch: gh-pages
-          folder: build/${{ matrix.targetPlatform }}
+          folder: build/
           target-folder: .
 
       - name: Calculate Build Duration
