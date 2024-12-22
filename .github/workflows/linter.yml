@@ -23,4 +23,4 @@ jobs:
           echo "solution_file=$SOLUTION_FILE" >> $GITHUB_ENV
 
       - name: Run dotnet-format
-        run: dotnet format --check
+        run: dotnet format ${{ env.solution_file }} --verify-no-changes --verbosity diagnostic
