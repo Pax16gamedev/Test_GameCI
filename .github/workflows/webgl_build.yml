@@ -79,7 +79,7 @@ jobs:
           targetPlatform: WebGL
           unityVersion: ${{ vars.UNITY_VERSION }}
           versioning: Semantic
-          buildName: ${{ vars.PROJECT_NAME }} # `build/Project_Name`
+          buildName: ${{ vars.PROJECT_NAME }} # `build/Roguelike`
 
       - name: Measure Build Folder Size
         run: |
@@ -95,22 +95,12 @@ jobs:
           path: build/${{ matrix.targetPlatform }}
           if-no-files-found: "warn"
 
-      # Move Build to Root
-      - name: Move WebGL Build to Root
-        run: |
-          if [ -d "build/${{ matrix.targetPlatform }}" ]; then
-            sudo mv build/${{ matrix.targetPlatform }}/* build/
-            sudo rm -rf build/${{ matrix.targetPlatform }}
-          else
-            echo "El directorio build/${{ matrix.targetPlatform }} no existe. Nada que mover."
-          fi
-
       # Deploy to GH
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@4.1.3
         with:
           branch: gh-pages
-          folder: build/
+          folder: build/${{ matrix.targetPlatform }}
           target-folder: .
 
       - name: Calculate Build Duration
@@ -167,7 +157,7 @@ jobs:
                   "fields": [
                     { "name": "🌿 Rama ", "value": "${{ github.ref_name }}" },
                     { "name": "🎮 Plataforma ", "value": "${{ matrix.targetPlatform }}" },
-                    { "name": "🔗 Enlace ", "value": "[Ver WebGL](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }})" },
+                    { "name": "🔗 Enlace ", "value": "[Ver WebGL](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/${{ vars.PROJECT_NAME }})" },
                     { "name": "⏱️ Duración ", "value": "${{ env.formatted_duration }}" }
                   ],
                   "footer": { 
