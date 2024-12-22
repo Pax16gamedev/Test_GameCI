@@ -13,5 +13,8 @@ jobs:
       - name: Install dotnet-format
         run: dotnet tool install -g dotnet-format
 
+      - name: Print working directory
+        run: pwd
+
       - name: Run dotnet-format
         run: dotnet format --check
