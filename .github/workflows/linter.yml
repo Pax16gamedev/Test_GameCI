@@ -1,8 +1,9 @@
 name: Linter Check
 on:
-  pull_request:
-    branches:
-      - DESARROLLO
+  workflow_dispatch: {}
+  # pull_request:
+  #   branches:
+  #     - DESARROLLO
 jobs:
   linter:
     runs-on: ubuntu-latest
