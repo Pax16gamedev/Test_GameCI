@@ -10,8 +10,9 @@ public class EnemySpawner : MonoBehaviour
     void Start()
     {
         print("Start");
-        print(1+1)
-        print(1 + 1)
+        print(1+1);
+        print(1 + 1);
+
         // otro cambio
     }
 }
