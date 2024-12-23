@@ -13,14 +13,10 @@ jobs:
       - name: Install dotnet-format
         run: dotnet tool install -g dotnet-format
 
-      - name: Find solution file
+      - name: Generate solution file
         run: |
-          SOLUTION_FILE=$(find . -name "*.sln" | head -n 1)
-          if [ -z "$SOLUTION_FILE" ]; then
-            echo "No .sln file found."
-            exit 1
-          fi
-          echo "solution_file=$SOLUTION_FILE" >> $GITHUB_ENV
+          dotnet new sln --name UnitySolution
+          dotnet sln UnitySolution.sln add $(find . -name "*.cs" -not -path "./Library/*" -not -path "./Temp/*")
 
       - name: Run dotnet-format
-        run: dotnet format --check
+        run: dotnet format UnitySolution.sln --verify-no-changes --verbosity diagnostic
