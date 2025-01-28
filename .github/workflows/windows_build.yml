@@ -33,7 +33,7 @@ jobs:
 
           if [ -z "${{ vars.PROJECT_NAME }}" ]; then
             echo "Error: PROJECT_NAME variable is not set ❌."
-            echo "PROJECT_NAME=defaultUnityProject" >> $GITHUB_ENV
+            echo "PROJECT_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
             echo "Setting PROJECT_NAME to ${{ vars.PROJECT_NAME }}"
           fi
 
@@ -176,6 +176,9 @@ jobs:
                   "footer": {
                     "text": "GitHub Actions - Discord Integration", 
                     "icon_url": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                  },
+                  "author": {
+                    "name": "${{ vars.PROJECT_NAME }}"
                   },
                   "thumbnail": {
                     "url": "${{ env.THUMBNAIL_URL }}"
