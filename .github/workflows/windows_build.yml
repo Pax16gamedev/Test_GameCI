@@ -148,7 +148,7 @@ jobs:
             echo "THUMBNAIL_URL=https://e1.pngegg.com/pngimages/720/726/png-clipart-emoji-sticker-x-icon.png" >> $GITHUB_ENV
           fi
 
-          echo "LINK_ACTION=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/${{ steps.get-artifact-id.outputs.artifact_id }}" >> $GITHUB_ENV
+          echo "LINK_ACTION=https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts/${{ steps.get-artifact-id.outputs.artifact_id }}" >> $GITHUB_ENV
           echo "TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> $GITHUB_ENV
 
       # Set notification message
@@ -170,7 +170,7 @@ jobs:
                   "fields": [
                     { "name": "🌿 Rama ", "value": "${{ github.ref_name }}" },
                     { "name": "🎮 Plataforma ", "value": "StandaloneWindows64" },
-                    { "name": "🔗 Enlace ", "value": "[Ver artifact](${{ env.LINK_ACTION }})" },
+                    { "name": "🔗 Enlace ", "value": "[Descargar artifact](${{ env.LINK_ACTION }})" },
                     { "name": "⏱️ Duración ", "value": "${{ env.formatted_duration }}" }
                   ],
                   "footer": {
