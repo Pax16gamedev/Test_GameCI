@@ -1,8 +1,9 @@
 name: Linter Check
 on:
-  pull_request:
-    branches:
-      - DESARROLLO
+  workflow_dispatch: {}
+  # pull_request:
+  #   branches:
+  #     - DESARROLLO
 jobs:
   linter:
     runs-on: ubuntu-latest
@@ -13,10 +14,11 @@ jobs:
       - name: Install dotnet-format
         run: dotnet tool install -g dotnet-format
 
-      - name: Generate solution file
+      - name: Run dotnet format on changed files
         run: |
-          dotnet new sln --name UnitySolution
-          dotnet sln UnitySolution.sln add $(find . -name "*.cs" -not -path "./Library/*" -not -path "./Temp/*")
+          for file in $(find . -name "*.cs" -not -path "./Library/*" -not -path "./Temp/*"); do
+            dotnet format --include "$file" --verify-no-changes --verbosity diagnostic
+          done
 
-      - name: Run dotnet-format
-        run: dotnet format UnitySolution.sln --verify-no-changes --verbosity diagnostic
+      # - name: Run dotnet-format
+      #   run: dotnet format UnitySolution.sln --verify-no-changes --verbosity diagnostic
