@@ -191,10 +191,12 @@ jobs:
       - name: Install butler
         if: env.PUBLISH_TO_ITCHIO == 'true'
         run: |
-          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/head/archive/default
-          unzip butler.zip -d butler
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
           chmod +x butler/butler
           echo "$PWD/butler" >> $GITHUB_PATH
+          echo "Butler installed successfully."
+          ./butler -V
 
       - name: Push to Itch.io
         if: env.PUBLISH_TO_ITCHIO == 'true'
