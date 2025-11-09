@@ -114,7 +114,7 @@ jobs:
         run: |
           BASE_VERSION=$(grep bundleVersion ProjectSettings/ProjectSettings.asset | awk '{print $2}')
           echo "BASE_VERSION=$BASE_VERSION" >> $GITHUB_ENV
-          
+          echo "Version $BASE_VERSION"
             
       - name: Set custom build version
         id: versioning
