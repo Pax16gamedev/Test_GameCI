@@ -193,8 +193,8 @@ jobs:
         run: |
           curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
           unzip butler.zip
-          chmod +x butler/butler
-          echo "$PWD/butler" >> $GITHUB_PATH
+          chmod +x butler
+          echo "$PWD" >> $GITHUB_PATH
           echo "Butler installed successfully."
           ./butler -V
 
@@ -202,9 +202,15 @@ jobs:
         if: env.PUBLISH_TO_ITCHIO == 'true'
         env:
           BUTLER_API_KEY: ${{ secrets.ITCHIO_API_KEY }}
+          ITCHIO_CHANNEL: ${{ env.ITCHIO_CHANNEL }}
         run: |
           echo "Publishing to itch.io on the channel $ITCHIO_CHANNEL"
-          butler/butler push build/WebGL $ITCHIO_CHANNEL
+          if [ -d build/WebGL ]; then
+            ./butler push build/WebGL "$ITCHIO_CHANNEL"
+          else
+            echo "❌ Carpeta de build/WebGL no encontrada. No se puede publicar en Itch.io."
+            exit 1
+          fi
 
       - name: Calculate Build Duration
         if: always()
