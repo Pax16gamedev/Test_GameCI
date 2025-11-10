@@ -12,7 +12,7 @@ jobs:
     uses: Pax16gamedev/TestGameCI_DevOps/.github/workflows/build-webgl.yml@DESARROLLO
     secrets: inherit
     with:
-      sendToDiscord: false
+      sendToDiscord: true
       publishToItch: true
       itchioChannel: "pax16/test-devops:webgl"
 
